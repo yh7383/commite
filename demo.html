@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <style>
+        body{
+            margin: 0;
+            padding: 0;
+        }
+        #circle_color {
+            position: relative;
+            top: -700px;
+            left: 900px;
+        }
+    </style>
+</head>
+<body onload="main()">
+    <canvas id="cvs" width="800" height="800"></canvas>
+    <div id="circle_color">
+        <div>
+            R:0<input type="range" id="r" value="255" min = "0" max="255">255
+        </div>
+        <div>
+            G:0<input type="range" id="g" value="0" min = "0" max="255">255
+        </div>
+        <div>
+            B:0<input type="range" id="b" value="0"  min = "0" max="255">255
+        </div>
+    </div>
+    <script id="vertex" type="text/v-shader">
+        attribute vec3 position;
+        uniform vec4 move;
+        void main(){
+            gl_Position=vec4(position,1.0)+move;
+        }
+    </script>
+    <script  id="fragment" type="text/f-shader">
+        precision mediump float;
+        uniform vec4 color;
+        void main(){
+            gl_FragColor=color;
+        }
+    </script>
+    
+    <script type="text/javascript">
+        var rgba= [1.0, 0.0, 0.0, 1.0];
+        var posxy= [0.0, 0.0, 0.0, 0.0];
+        var slideR = document.getElementById("r");
+        var slideG = document.getElementById("g");
+        var slideB = document.getElementById("b");
+        var cvs = document.getElementById("cvs");
+        slideR.onchange = function (ev) { slideColorChange(ev); };
+        slideG.onchange = function (ev) { slideColorChange(ev); };
+        slideB.onchange = function (ev) { slideColorChange(ev); };
+        cvs.onmousedown=function (ev) {
+            //设置移动事件
+            cvs.onmousemove = function(ev){
+                //转换成webgl的格式
+                var x= ev.clientX;
+                var y= ev.clientY;
+                posxy[0]=(x-400)/400;
+                posxy[1]=-(y-400)/400;
+                main();
+            };
+            //鼠标抬起清除绑定事件
+            cvs.onmouseup = function(ev){
+                cvs.onmousemove = null;
+                cvs.onmouseup = null;
+            };
+        }
+        function drawY(r,m){
+            //arr数组
+            var arr= new Array();
+            //增加角度，即精度，每次加的角度
+            var addAng=360/m;
+            //初始角度
+            var angle=0;
+            //arr加入数据
+            for(var i = 0;i<m;i++){
+                //插入angle值
+                arr.push(Math.sin(Math.PI/180*angle)*r,Math.cos(Math.PI/180*angle)*r,0);
+                arr.push(0.0,0.0,0.0);
+                angle=angle+addAng;
+                //插入nangle值
+                arr.push(Math.sin(Math.PI/180*angle)*r,Math.cos(Math.PI/180*angle)*r,0);
+            }
+            return arr;
+        }
+        function initpaogram(gl,vertex,fragment){
+            var paogram = gl.createProgram();
+            gl.createProgram();
+            gl.shaderSource(vertex,document.getElementById("vertex").text);
+            gl.shaderSource(fragment,document.getElementById("fragment").text);
+            gl.compileShader(vertex);
+            gl.compileShader(fragment);
+            gl.attachShader(paogram,vertex);
+            gl.attachShader(paogram,fragment);
+            gl.linkProgram(paogram);
+            gl.useProgram(paogram);
+            return paogram;
+        }
+        function slideColorChange(ev) {
+            var id = ev.target.id;
+            var value = ev.target.value;
+            if(id === 'r') {
+                rgba[0] = value / 255;
+            }
+            if(id == 'g') {
+                rgba[1] = value / 255;
+            }
+            if(id == 'b') {
+                rgba[2] = value / 255;
+            }
+            main();
+        }
+        function main(){
+            //获取画布的背景（上下文）
+            var gl = cvs.getContext("experimental-webgl");
+            //顶点着色器源码
+            var vertex = gl.createShader(gl.VERTEX_SHADER);
+            //片元着色器代码
+            var fragment = gl.createShader(gl.FRAGMENT_SHADER);
+            //初始化program
+            var paogram = initpaogram(gl,vertex,fragment);
+            var ms = 90;
+            //顶点数据
+            data=drawY(0.5,ms);
+            //获得顶点着色器的position
+            var positionIndex = gl.getAttribLocation(paogram,"position");
+            //获得顶点着色器的mat
+            var moveIndex = gl.getUniformLocation(paogram,"move");
+            //获得片元着色器的color
+            var colorIndex = gl.getUniformLocation(paogram,"color");
+            //创建缓冲区
+            var buffer = gl.createBuffer();
+            //绑定缓冲区
+            gl.bindBuffer(gl.ARRAY_BUFFER,buffer);
+            //写入缓冲区数据
+            gl.bufferData(gl.ARRAY_BUFFER,new Float32Array(data),gl.STATIC_DRAW);
+            //传递顶点着色器数据
+            gl.vertexAttribPointer(positionIndex,3,gl.FLOAT,false,0,0);
+            //使能
+            gl.enableVertexAttribArray(positionIndex);
+            //传递顶点着色器数据
+            gl.uniform4fv(moveIndex,posxy);
+            //传递片元着色器数据
+            gl.uniform4fv(colorIndex,rgba);
+            //背景color
+            gl.clearColor(0.5, 0.5, 0.5, 0.7);
+            //清理缓冲区
+            gl.clear(gl.COLOR_BUFFER_BIT);
+            //画
+            gl.drawArrays(gl.TRIANGLES,0,ms*3);
+        }
+    </script>
+</body>
+</html>
