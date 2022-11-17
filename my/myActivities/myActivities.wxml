@@ -1,0 +1,20 @@
+<!--pages/my/myActivities/myActivities.wxml-->
+<view style="height: 20px;"></view>
+
+<view class="content">
+  <view class="activity" wx:for="{{myactivitylist}}" wx:key="id" id="item.id">
+    <view class="title">
+      <image src="{{item.head}}" class="head"></image>
+      <view style="float: left;height: 80rpx;width: 320rpx;margin-left: 30rpx;">
+        <view style="height: 50rpx;width: 320rpx;font-size: 36rpx;">{{item.name}}</view>
+        <view style="height: 30rpx;width: 320rpx;line-height: 30rpx;font-size: 22rpx;">
+          {{item.date}}
+        </view>
+      </view>
+      <view class="more">More</view>
+    </view>
+    <view class="intro">
+      {{item.intro}}
+    </view>
+  </view>
+</view>

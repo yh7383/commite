@@ -1,0 +1,64 @@
+/* pages/my/blacklist/blacklist.wxss *//**index.wxss**/
+.content {
+  width: 90%;
+  margin: 0 auto;
+}
+
+.activity {
+  height: 175rpx;
+  background-color: #f0f9f6;
+  padding-top: 40rpx;
+  margin-bottom: 20rpx;
+}
+
+.activity .head {
+  float: left;
+  height: 80rpx;
+  width: 80rpx;
+  border-radius: 40rpx;
+  background-color:#588c7e;
+}
+
+.activity .follow {
+  float: left;
+  height: 60rpx;
+  width: 120rpx;
+  border-radius: 30rpx;
+  background-color: #588c7e;
+  line-height: 60rpx;
+  color: #f0f9f6;
+  text-align: center;
+  font-size: 12px;
+  margin-top: 10rpx;
+}
+
+.title {
+  height: 80rpx;
+  width: 560rpx;
+  margin: 0 auto;
+  font-size: 20px;
+  color: #588c7e;
+}
+
+.tags {
+  height: 150rpx;
+  width: 560rpx;
+  margin: 0 auto;
+  margin-top: 20rpx;
+  color: #588c7e;
+}
+
+.tags li {
+  float: left;
+  margin-right: 15rpx;
+}
+
+.tags li view {
+  height: 40rpx;
+  padding: 0 20rpx;
+  border-radius: 20rpx;
+  box-sizing: border-box;
+  border: #588c7e solid 1px;
+  line-height: 40rpx;
+  font-size: 25rpx;
+}
