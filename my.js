@@ -17,6 +17,7 @@ Page({
     wx_account: '',
     is_fzu: false
   },
+
   //swich开关
   switchChange: function (e){
     wx.cloud.init({
@@ -181,6 +182,9 @@ Page({
       wx_account: app.globalData.wx,
       is_fzu: app.globalData.is_fzu
     })
+    setTimeout(()=>{
+      wx.stopPullDownRefresh()
+    },app.globalData.refresh_time)
   },
 
   /**
@@ -194,6 +198,15 @@ Page({
    * 用户点击右上角分享
    */
   onShareAppMessage() {
-
+  },
+  myprofile(){
+    wx.navigateTo({
+      url: '/pages/my/myProfile/myProfile',
+    })
+  },
+  blacklist(){
+    wx.navigateTo({
+      url: '/pages/my/blacklist/blacklist',
+    })
   }
 })
